@@ -10,8 +10,10 @@
   "author": "uzxr",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "express": "^4.18.2",
     "express-validator": "^6.14.2",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.6.5"
   },
   "devDependencies": {
