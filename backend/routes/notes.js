@@ -79,7 +79,7 @@ router.put(
         return res.status(401).send("Not Allowed");
       }
 
-      note = await Notes.findByIdAndUpdate(
+      note = await Note.findByIdAndUpdate(
         req.params.id,
         { $set: newNote },
         { new: true }
