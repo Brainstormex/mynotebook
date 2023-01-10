@@ -18,19 +18,18 @@ router.post(
     body("password").isLength({ min: 5 }),
   ],
   async (req, res) => {
+    let success = false;
     //if there are errors return bad request  and errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ success, errors: errors.array() });
     }
     //check whether the user with this email exits already
     try {
       let user = await User.findOne({ email: req.body.email });
       //console.log(user)
       if (user) {
-        return res
-          .status(400)
-          .json({ error: "Sorry a user with this email already exists" });
+        return res.status(400).json({ success, error: "Sorry a user with this email already exists" });
       }
       const salt = await bcrypt.genSalt(10);
       const secPass = await bcrypt.hash(req.body.password, salt);
@@ -48,7 +47,8 @@ router.post(
       const authtoken = jwt.sign(data, JWT_SECRET);
 
       //res.json(user)
-      res.json({ authtoken });
+      success = true
+      res.json({ success, authtoken });
     } catch (error) {
       console.error(error.message);
       res.status(500).send("Internal Server Error");
@@ -64,7 +64,7 @@ router.post(
     body("password", "Password cannot be blank").exists(),
   ],
   async (req, res) => {
-    let success = false
+    let success = false;
     //if there are errors return bad request  and errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -74,13 +74,15 @@ router.post(
     try {
       let user = await User.findOne({ email });
       if (!user) {
-        success = false
+        success = false;
         return res.status(400).json({ error: "Incorrect Credentails" });
       }
       const passwordCompare = await bcrypt.compare(password, user.password);
       if (!passwordCompare) {
         success = false;
-        return res.status(400).json({ success, error: "Incorrect Credentails" });
+        return res
+          .status(400)
+          .json({ success, error: "Incorrect Credentails" });
       }
       const data = {
         user: {
