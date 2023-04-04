@@ -1,9 +1,13 @@
-const mongoose = require('mongoose')
-const mongoURI = 'mongodb://localhost:27017/mynotebook'
+const mongoose = require("mongoose");
+const mongoURI = process.env.MONGO_KEY;
 
-const connectToMongo = ()=>{
-    mongoose.connect(mongoURI, ()=>{
-        console.log("Connected to mongo Successfully")
+const connectToMongo = (mongoURI) => {
+  return mongoose
+    .connect(mongoURI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
     })
-}
-module.exports = connectToMongo
+    .then(() => console.log("connection successfull"))
+    .catch((err) => console.log("no connection"));
+};
+module.exports = connectToMongo;

@@ -1,21 +1,32 @@
-const connectToMongo = require('./db');
-const express = require('express')
-var cors = require('cors')
+const express = require("express");
+const mongoose = require("mongoose");
+const connectToMongo = require("./db");
+require("dotenv").config({ path: "./config.env" });
+var cors = require("cors");
 
-connectToMongo();
+const app = express();
+const PORT = process.env.PORT;
 
-const app = express()
-const port = 5000
-
-app.use(cors())
-app.use(express.json())
-
-
+app.use(cors());
+app.use(express.json());
 
 //Available routes
-app.use('/api/auth', require('./routes/auth'))
-app.use('/api/notes', require('./routes/notes'))
+app.use("/api/auth", require("./routes/auth"));
+app.use("/api/notes", require("./routes/notes"));
 
-app.listen(port, () => {
-  console.log(`myNotebook backend listening on port ${port}`)
-})
+const startServer = () => {
+  try {
+    connectToMongo(process.env.MONGO_KEY);
+    app.listen(PORT, () => {
+      console.log(`myNotebook backend listening on port ${PORT}`);
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+startServer();
+
+// app.listen(PORT, () => {
+//   console.log(`myNotebook backend listening on port ${PORT}`)
+// })
